@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\test-fibonacci",
+    "\\test-fibonacci\\3rdparty",
+    "\\test-fibonacci\\3rdparty\\imgui",
+    "\\test-fibonacci\\src"
+  ],
+  "SelectedNode": "\\test-fibonacci\\src\\main.cpp",
+  "PreviewInSolutionExplorer": false
+}
