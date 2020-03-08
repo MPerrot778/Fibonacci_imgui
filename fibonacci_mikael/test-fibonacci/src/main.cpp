@@ -1,13 +1,16 @@
-// dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
-// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
-
+//// dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
+//// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
+//// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
+#include "fibonacci.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include "fibonacci.h"
 #include <stdio.h>
+#include <string>
+#include <vector>
 
+
+//
 // About Desktop OpenGL function loaders:
 //  Modern desktop OpenGL doesn't have a standard portable header file to load OpenGL function pointers.
 //  Helper libraries are often used for this purpose! Here we are supporting a few common ones (gl3w, glew, glad).
@@ -31,6 +34,7 @@
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
+
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -117,12 +121,24 @@ int main(int, char**)
     // Our state
     static int values[2];
     static bool sim_start = false;
+
+    int temp1 = 0;
+    int temp2 = 0;
+    int last_fib_value = 0;
+    std::vector<double> buffer(2);
+
+    fibonacci fib_test = fibonacci(buffer);
+
     ImVec2 fibWin_size = ImVec2(500.0,300.0);
     ImVec2 fibWin_pos = ImVec2(0.0,0.0);
     ImVec2 simWin_size = ImVec2(500.0, 300.0);
     ImVec2 simWin_pos = ImVec2(500, 0.0);
 
+    ImVec2 circ_center;
+
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    values[0] = 0;
+    values[1] = 0;
 
     // Main loop
 
@@ -144,12 +160,17 @@ int main(int, char**)
         ImGui::SetNextWindowPos(fibWin_pos, ImGuiCond_Once);
         ImGui::SetNextWindowSize(fibWin_size, ImGuiCond_Once);
 
-        ImGui::Begin("Fibonnaci");                         
+        ImGui::Begin("Fibonnaci");   
         if (!sim_start) {
-            ImGui::Text("Values to generate simulation (Must be greater than zero)");
-            ImGui::InputInt2("", values);
-            ImGui::Text("Valeur 1: %d", values[0]);
-            ImGui::Text("Valeur 2: %d", values[1]);
+            ImGui::Text("Scale of Fibonacci serie");
+            ImGui::InputInt("", &values[0]);
+
+            ImGui::Text("Number of spire to display (must be greater of equal to scale)");
+            ImGui::InputInt("", &values[1]);
+
+            if (values[1] <= values[0]) {
+                values[1] = values[0];
+            }
 
             if (values[0] < 0 || values[1] < 0) {
                 values[0] = 0;
@@ -159,11 +180,13 @@ int main(int, char**)
             if (values[0] > 0 && values[1] > 0) {
                 if (ImGui::Button("Jouer")) {
                     sim_start = true;
+                    buffer = fib_test.createFib(values[0], values[1]);
                 }
             }
         }
         else{
-            ImGui::Text("Simulation is running");
+            last_fib_value = fib_test.lastValue(buffer);
+            ImGui::Text("Last value: %d",last_fib_value);
             if (ImGui::Button("Stop simulation")) {
                 sim_start = false;
             }
@@ -174,14 +197,17 @@ int main(int, char**)
             ImGui::SetNextWindowPos(simWin_pos, ImGuiCond_Appearing);
             ImGui::SetNextWindowSize(simWin_size, ImGuiCond_Appearing);
             ImGui::Begin("Simulation");
-            ImGui::Text("Test");
-
+            
+            
+            
+        
 
             ImGui::End();
         }
 
         // Rendering
         ImGui::Render();
+        ImGuiIO& io = ImGui::GetIO();
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
@@ -202,3 +228,5 @@ int main(int, char**)
 
     return 0;
 }
+
+

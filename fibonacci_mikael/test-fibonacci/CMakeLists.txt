@@ -15,7 +15,10 @@ add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
 
 # Dear ImGui
 set(imgui_SOURCE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/imgui)
+set(fibonacci_SOURCE_DIR ${CMAKE_SOURCE_DIR}/fibonacci)
 set(DEP_SRC
+    
+    # Dear ImGui
     ${imgui_SOURCE_DIR}/imgui_demo.cpp
     ${imgui_SOURCE_DIR}/imgui_draw.cpp
     ${imgui_SOURCE_DIR}/imgui_widgets.cpp
@@ -24,7 +27,12 @@ set(DEP_SRC
     ${imgui_SOURCE_DIR}/examples/imgui_impl_glfw.cpp
     ${imgui_SOURCE_DIR}/examples/imgui_impl_opengl3.cpp
     ${imgui_SOURCE_DIR}/examples/libs/gl3w/GL/gl3w.c
+
+    # fibonacci
+    ${fibonacci_SOURCE_DIR}/fibonacci.cpp
 )
+
+
 
 # Main application
 add_executable(fibui
@@ -34,9 +42,11 @@ add_executable(fibui
 
 target_include_directories(fibui
     PRIVATE
+    ${fibonacci_SOURCE_DIR}
     ${imgui_SOURCE_DIR}
     ${imgui_SOURCE_DIR}/examples
     ${imgui_SOURCE_DIR}/examples/libs/gl3w
+    
 )
 
 if(WIN32)
