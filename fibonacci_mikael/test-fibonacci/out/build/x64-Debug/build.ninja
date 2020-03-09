@@ -113,6 +113,14 @@ build CMakeFiles\fibui.dir\fibonacci\fibonacci.cpp.obj: CXX_COMPILER__fibui ..\.
   TARGET_COMPILE_PDB = CMakeFiles\fibui.dir\
   TARGET_PDB = fibui.pdb
 
+build CMakeFiles\fibui.dir\fibonacci\fibDraw.cpp.obj: CXX_COMPILER__fibui ..\..\..\fibonacci\fibDraw.cpp || cmake_object_order_depends_target_fibui
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd
+  INCLUDES = -I..\..\..\fibonacci -I..\..\..\3rdparty\imgui -I..\..\..\3rdparty\imgui\examples -I..\..\..\3rdparty\imgui\examples\libs\gl3w -I..\..\..\3rdparty\glfw\include
+  OBJECT_DIR = CMakeFiles\fibui.dir
+  OBJECT_FILE_DIR = CMakeFiles\fibui.dir\fibonacci
+  TARGET_COMPILE_PDB = CMakeFiles\fibui.dir\
+  TARGET_PDB = fibui.pdb
+
 build CMakeFiles\fibui.dir\src\main.cpp.obj: CXX_COMPILER__fibui ..\..\..\src\main.cpp || cmake_object_order_depends_target_fibui
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   INCLUDES = -I..\..\..\fibonacci -I..\..\..\3rdparty\imgui -I..\..\..\3rdparty\imgui\examples -I..\..\..\3rdparty\imgui\examples\libs\gl3w -I..\..\..\3rdparty\glfw\include
@@ -129,7 +137,7 @@ build CMakeFiles\fibui.dir\src\main.cpp.obj: CXX_COMPILER__fibui ..\..\..\src\ma
 #############################################
 # Link the executable fibui.exe
 
-build fibui.exe: CXX_EXECUTABLE_LINKER__fibui CMakeFiles\fibui.dir\3rdparty\imgui\imgui_demo.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\imgui_draw.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\imgui_widgets.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\imgui.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\examples\imgui_impl_glfw.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\examples\imgui_impl_opengl3.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\examples\libs\gl3w\GL\gl3w.c.obj CMakeFiles\fibui.dir\fibonacci\fibonacci.cpp.obj CMakeFiles\fibui.dir\src\main.cpp.obj | 3rdparty\glfw\src\glfw3.lib || 3rdparty\glfw\src\glfw3.lib
+build fibui.exe: CXX_EXECUTABLE_LINKER__fibui CMakeFiles\fibui.dir\3rdparty\imgui\imgui_demo.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\imgui_draw.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\imgui_widgets.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\imgui.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\examples\imgui_impl_glfw.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\examples\imgui_impl_opengl3.cpp.obj CMakeFiles\fibui.dir\3rdparty\imgui\examples\libs\gl3w\GL\gl3w.c.obj CMakeFiles\fibui.dir\fibonacci\fibonacci.cpp.obj CMakeFiles\fibui.dir\fibonacci\fibDraw.cpp.obj CMakeFiles\fibui.dir\src\main.cpp.obj | 3rdparty\glfw\src\glfw3.lib || 3rdparty\glfw\src\glfw3.lib
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = 3rdparty\glfw\src\glfw3.lib opengl32.lib gdi32.lib shell32.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

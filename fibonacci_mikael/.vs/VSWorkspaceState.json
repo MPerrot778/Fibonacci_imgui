@@ -4,10 +4,11 @@
     "\\test-fibonacci",
     "\\test-fibonacci\\3rdparty",
     "\\test-fibonacci\\3rdparty\\imgui",
+    "\\test-fibonacci\\3rdparty\\imgui\\misc",
+    "\\test-fibonacci\\3rdparty\\imgui\\misc\\cpp",
     "\\test-fibonacci\\fibonacci",
-    "\\test-fibonacci\\out",
     "\\test-fibonacci\\src"
   ],
-  "SelectedNode": "\\test-fibonacci\\3rdparty\\imgui\\imgui.cpp",
+  "SelectedNode": "\\test-fibonacci\\src\\main.cpp",
   "PreviewInSolutionExplorer": false
 }

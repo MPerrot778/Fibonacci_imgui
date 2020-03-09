@@ -30,6 +30,8 @@ set(DEP_SRC
 
     # fibonacci
     ${fibonacci_SOURCE_DIR}/fibonacci.cpp
+    ${fibonacci_SOURCE_DIR}/fibDraw.cpp
+
 )
 
 

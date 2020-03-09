@@ -2,12 +2,17 @@
 //// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
 //// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
 #include "fibonacci.h"
+#include "fibDraw.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include <math.h>
+#include <iostream>
+#include <fstream>
+#include <sys/stat.h>
 
 
 //
@@ -118,27 +123,39 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
+
     // Our state
     static int values[2];
+    static float scale_value = 1;
     static bool sim_start = false;
+    int temp = 0;
+    int counter = 0;
 
-    int temp1 = 0;
-    int temp2 = 0;
-    int last_fib_value = 0;
+    char input1[] = "##input1";
+    char input2[] = "##input2";
+    char input3[] = "##input3";
+    char file_name[15] = "myFile";
+    std::ifstream in_file;
+
+    bool values_checkbox = false;
+    bool save_data = false;
+    bool load_data = false;
+    bool disp_all = false;
+    bool disp_only_showed = false;
+    bool disp_spirals = false;
+    bool disp_squares = false;
+
     std::vector<double> buffer(2);
 
-    fibonacci fib_test = fibonacci(buffer);
+    fibonacci fib_serie = fibonacci(buffer);
 
     ImVec2 fibWin_size = ImVec2(500.0,300.0);
     ImVec2 fibWin_pos = ImVec2(0.0,0.0);
-    ImVec2 simWin_size = ImVec2(500.0, 300.0);
-    ImVec2 simWin_pos = ImVec2(500, 0.0);
-
-    ImVec2 circ_center;
+    ImVec2 simWin_size = ImVec2(800.0, 1000.0);
+    ImVec2 simWin_pos = ImVec2(500.0, 0.0);
+    ImVec2 initial_spiral_pos = ImVec2(900.0, 500.0);
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    values[0] = 0;
-    values[1] = 0;
 
     // Main loop
 
@@ -157,57 +174,134 @@ int main(int, char**)
 
         ImGui::NewFrame();
 
-        ImGui::SetNextWindowPos(fibWin_pos, ImGuiCond_Once);
+        // main window
+        ImGui::SetNextWindowPos(fibWin_pos, ImGuiCond_Always);
         ImGui::SetNextWindowSize(fibWin_size, ImGuiCond_Once);
-
         ImGui::Begin("Fibonnaci");   
         if (!sim_start) {
-            ImGui::Text("Scale of Fibonacci serie");
-            ImGui::InputInt("", &values[0]);
+            if (!load_data) {
 
-            ImGui::Text("Number of spire to display (must be greater of equal to scale)");
-            ImGui::InputInt("", &values[1]);
+                // Data Input
+                ImGui::Text("Fibonacci serie parameters: ");
+                ImGui::Checkbox("Same Value for both", &values_checkbox);
+                ImGui::Text("Size of the serie :");
+                ImGui::InputInt(input1, &values[0]);
+                if (values_checkbox) {
+                    values[1] = values[0];
+                }
+                ImGui::Text("Number of spiral to display :");
+                ImGui::Text("(must be smaller of equal to the size)");
+                ImGui::InputInt(input2, &values[1], 1);
 
-            if (values[1] <= values[0]) {
-                values[1] = values[0];
-            }
+                // Verify if both values are over 0
+                if (values[0] < 0 || values[1] < 0) {
+                    values[0] = 0;
+                    values[1] = 0;
+                }
 
-            if (values[0] < 0 || values[1] < 0) {
-                values[0] = 0;
-                values[1] = 0;
-            }
+                // Give the same value to both inputs, if values[1] is greater than values[0]
+                if (values[1] > values[0]) {
+                    values[1] = values[0];
+                }
 
-            if (values[0] > 0 && values[1] > 0) {
-                if (ImGui::Button("Jouer")) {
-                    sim_start = true;
-                    buffer = fib_test.createFib(values[0], values[1]);
+                // If condition are respected, "Run simulation" appear
+                if (values[0] > 0 && values[1] > 0) {
+                    if (ImGui::Button("Run simulation")) {
+                        sim_start = true;
+                        buffer = fib_serie.createFib(values[0], values[1]);
+                    }
+                }
+
+                // Let the user load data (doesn<t work yet)
+                if (ImGui::Button("Load data")) {
+                    load_data = true;
                 }
             }
+
+            else {
+                // Doesn't work, but i'll do something like that if it wasworking
+
+                //if (ImGui::InputText("File name", file_name, sizeof(file_name), ImGuiInputTextFlags_EnterReturnsTrue)) {
+                    //std::strcat(file_name, ".txt");
+                    
+                    //in_file.open(file_name);
+                    //if (!in_file) {
+                    //    std::cout << "Unable to open file";
+                    //    load_data = false;
+                    //}
+                    //while (in_file >> temp) {
+                    //    counter++;
+                    //}
+                    
+                    //buffer = fib_serie.createFib(counter);
+                    
+                    //in_file.close();
+                load_data = false;
+            }
+
         }
         else{
-            last_fib_value = fib_test.lastValue(buffer);
-            ImGui::Text("Last value: %d",last_fib_value);
+            // Stop simulation
             if (ImGui::Button("Stop simulation")) {
                 sim_start = false;
             }
+            save_data = ImGui::Button("Save Data");
+
+            // Display Fibonacci coeffs
+            ImGui::Checkbox("Display all Fibonacci coefficients", &disp_all);
+            ImGui::Checkbox("Display only coefficients showed in the simulation", &disp_only_showed);
+            ImGui::Checkbox("Display Fibonacci spirals", &disp_spirals);
+            ImGui::Checkbox("Display Fibonnaci squares", &disp_squares);
+            ImGui::Text("Zoom");
+            ImGui::DragFloat("##zoom", &scale_value,0.1,0.01,25.0);
+            ImGui::SameLine();
+            ImGui::Text("(%d (%))", (int)(scale_value * 100.0));
+            if (disp_all || (disp_all && disp_only_showed)) {
+                fib_serie.listAll();
+            }
+            else if (disp_only_showed) {
+                fib_serie.listOnlyShowed();
+            }
         }
         ImGui::End();
+
+        // simulation window
+        ImGui::SetNextWindowPos(simWin_pos, ImGuiCond_Always);
+        ImGui::SetNextWindowSize(simWin_size, ImGuiCond_Appearing);
+        ImGui::Begin("Simulation");
         
         if (sim_start) {
-            ImGui::SetNextWindowPos(simWin_pos, ImGuiCond_Appearing);
-            ImGui::SetNextWindowSize(simWin_size, ImGuiCond_Appearing);
-            ImGui::Begin("Simulation");
-            
-            
-            
-        
-
-            ImGui::End();
+            ImDrawList* list = ImGui::GetWindowDrawList();
+            fibDraw fib_draw = fibDraw(list);
+            if(disp_spirals)
+                fib_draw.drawFibSpiral(values[1], buffer, initial_spiral_pos,scale_value);
+            if(disp_squares)
+                fib_draw.drawfibSquare(values[1], buffer, initial_spiral_pos,scale_value);
         }
+        ImGui::End();
+
+        // Would do that if it worked....
+        if (save_data) {
+            //std::ofstream data_file(file_name);
+            //if (data_file.is_open()) {
+            //    for (int i = 0; i <= values[0]; i++) {
+            //        data_file << (int)buffer[i] << std::endl;
+            //    }
+            //    data_file.flush();
+            //    data_file.close();
+            //    std::cout << buffer[i] << std::endl;
+            //}
+            //else {
+            //    std::cout << "failed opening file" << std::endl;
+            //}
+            save_data = false;
+        }
+
+
 
         // Rendering
         ImGui::Render();
-        ImGuiIO& io = ImGui::GetIO();
+        
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
